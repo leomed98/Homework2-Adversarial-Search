@@ -2,11 +2,11 @@ from GameStatus_5120 import GameStatus
 
 
 def minimax(game_state: GameStatus, depth: int, maximizingPlayer: bool, alpha=float('-inf'), beta=float('inf')):
-	terminal = game_state.is_terminal()
+	
+terminal = game_state.is_terminal()
 	if (depth==0) or (terminal):
-		newScores = game_state.get_scores(terminal)
-		return newScores, None
-
+		value = game_state.get_scores(terminal)
+		return value, None
 	"""
     YOUR CODE HERE TO FIRST CHECK WHICH PLAYER HAS CALLED THIS FUNCTION (MAXIMIZING OR MINIMIZING PLAYER)
     YOU SHOULD THEN IMPLEMENT MINIMAX WITH ALPHA-BETA PRUNING AND RETURN THE FOLLOWING TWO ITEMS
