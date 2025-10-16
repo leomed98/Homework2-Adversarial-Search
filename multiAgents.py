@@ -1,39 +1,104 @@
 from GameStatus_5120 import GameStatus
 
 
-def minimax(game_state: GameStatus, depth: int, maximizingPlayer: bool, alpha=float('-inf'), beta=float('inf')):
-	
-terminal = game_state.is_terminal()
-	if (depth==0) or (terminal):
-		value = game_state.get_scores(terminal)
-		return value, None
-	"""
-    YOUR CODE HERE TO FIRST CHECK WHICH PLAYER HAS CALLED THIS FUNCTION (MAXIMIZING OR MINIMIZING PLAYER)
-    YOU SHOULD THEN IMPLEMENT MINIMAX WITH ALPHA-BETA PRUNING AND RETURN THE FOLLOWING TWO ITEMS
-    1. VALUE
-    2. BEST_MOVE
+def minimax(game_state: GameStatus, depth: int, maximizingPlayer: bool,
+            alpha: float = float('-inf'), beta: float = float('inf')):
+    # Terminal test or depth limit
+    terminal = game_state.is_terminal()
+    if depth == 0 or terminal:
+        return game_state.get_scores(terminal), None
+
+    # Generate possible actions
+    possible_moves = game_state.get_possible_moves()
+    if not possible_moves:
+        # No move: treat as terminal
+        return game_state.get_scores(True), None
+
+    best_move = None
+
+    if maximizingPlayer:
+        value = float('-inf')
+        for move in possible_moves:
+            child = game_state.get_new_state(move)
+            child_value, _ = minimax(child, depth - 1, False, alpha, beta)
+
+            if child_value > value:
+                value, best_move = child_value, move
+
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break
+        return value, best_move
+
+    else:
+        value = float('inf')
+        for move in possible_moves:
+            child = game_state.get_new_state(move)
+            child_value, _ = minimax(child, depth - 1, True, alpha, beta)
+
+            if child_value < value:
+                value, best_move = child_value, move
+
+            beta = min(beta, value)
+            if beta <= alpha:
+                break
+        return value, best_move
+
+
+
+	#"""
+   # YOUR CODE HERE TO FIRST CHECK WHICH PLAYER HAS CALLED THIS FUNCTION (MAXIMIZING OR MINIMIZING PLAYER)
+   # YOU SHOULD THEN IMPLEMENT MINIMAX WITH ALPHA-BETA PRUNING AND RETURN THE FOLLOWING TWO ITEMS
+   # 1. VALUE
+   # 2. BEST_MOVE
     
-    THE LINE TO RETURN THESE TWO IS COMMENTED BELOW WHICH YOU CAN USE
-    """
+   # THE LINE TO RETURN THESE TWO IS COMMENTED BELOW WHICH YOU CAN USE
+    #"""
 
 	# return value, best_move
 
-def negamax(game_status: GameStatus, depth: int, turn_multiplier: int, alpha=float('-inf'), beta=float('inf')):
-	terminal = game_status.is_terminal()
-	if (depth==0) or (terminal):
-		scores = game_status.get_negamax_scores(terminal)
-		return scores, None
-
-	"""
-    YOUR CODE HERE TO CALL NEGAMAX FUNCTION. REMEMBER THE RETURN OF THE NEGAMAX SHOULD BE THE OPPOSITE OF THE CALLING
-    PLAYER WHICH CAN BE DONE USING -NEGAMAX(). THE REST OF YOUR CODE SHOULD BE THE SAME AS MINIMAX FUNCTION.
-    YOU ALSO DO NOT NEED TO TRACK WHICH PLAYER HAS CALLED THE FUNCTION AND SHOULD NOT CHECK IF THE CURRENT MOVE
-    IS FOR MINIMAX PLAYER OR NEGAMAX PLAYER
-    RETURN THE FOLLOWING TWO ITEMS
-    1. VALUE
-    2. BEST_MOVE
-    
-    THE LINE TO RETURN THESE TWO IS COMMENTED BELOW WHICH YOU CAN USE
-    
+def negamax(game_status: GameStatus, depth: int, turn_multiplier: int,
+            alpha: float = float('-inf'), beta: float = float('inf')):
     """
-    #return value, best_move
+    Negamax with alpha–beta pruning.
+    turn_multiplier: +1 for the side we're evaluating for, -1 for adversary
+    """
+    terminal = game_status.is_terminal()
+    if depth == 0 or terminal:
+        base = (game_status.get_negamax_scores(terminal)
+                if hasattr(game_status, "get_negamax_scores")
+                else game_status.get_scores(terminal))
+        return turn_multiplier * base, None
+
+    possible_moves = game_status.get_possible_moves()
+    if not possible_moves:
+        base = (game_status.get_negamax_scores(True)
+                if hasattr(game_status, "get_negamax_scores")
+                else game_status.get_scores(True))
+        return turn_multiplier * base, None
+
+    best_val = float('-inf')
+    best_move = None
+
+    for move in possible_moves:
+        child = game_status.get_new_state(move)
+        # Flip turn and bounds for the adversary, then negate on return
+        child_val, _ = negamax(child, depth - 1, -turn_multiplier, -beta, -alpha)
+        val = -child_val
+
+        if val > best_val:
+            best_val, best_move = val, move
+
+        alpha = max(alpha, best_val)
+        if alpha >= beta:
+            break
+
+    return best_val, best_move
+
+    
+            
+    
+             
+
+	
+    
