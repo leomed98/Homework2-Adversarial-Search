@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import numpy as np
 
 class GameStatus:
 
@@ -10,9 +10,11 @@ class GameStatus:
 		self.winner = ""
 
 	def is_terminal(self):
+		#not terminal if empty cells remain
 		if (self.board_state == 0).any():
 			return False
 		
+		#board is full : decide winner by final triplet differnce
 		score = self.get_scores(terminal=True)
 		if score > 0:
 			self.winner = "O"
@@ -31,10 +33,71 @@ class GameStatus:
 		NEGATIVE (AI PLAYER WINS), OR 0 (DRAW)
 		
 		"""
+		
 		rows = len(self.board_state)
 		cols = len(self.board_state[0])
 		scores = 0
 		check_point = 3 if terminal else 2
+
+		#horizontal windows
+		for r in range(rows): #r = rows
+			for c in range(cols-2): #c=cols
+				w = self.board_state[r, c:c+3]
+				o = (w==1).sum()
+				x = (w==-1).sum()
+				z = ( w== 0).sum()
+				if check_point == 3:
+					if o ==3: scores += 1
+					elif x ==3: scores -= 1
+				else:
+					if o ==2 and z==1 and x==0: scores += 1
+					elif x == 2 and z ==1 and o ==0: scores -= 1
+
+				
+		#vertical windows
+		for r in range(rows-2):
+			for c in range(cols):
+				w = self.board_state[r: r+3,c]
+				o = (w ==1).sum()
+				x = (w== -1).sum()
+				z = (w== 0).sum()
+				if check_point==3:
+					if o == 3: scores += 1
+					elif x ==3: scores -= 1
+				else:
+					if o ==2 and z ==1 and x==0: scores +=1
+					elif x==2 and z==1 and o == 0: scores -= 1
+
+
+		#diagonal (\)down, right
+		for r in range(rows -2):
+			for c in range(cols -2):
+				w = [self.board_state[r+i, c+i] for i in range(3)]
+				o = sum(v==1 for v in w)
+				x = sum(v==-1 for v in w)
+				z = sum(v==0 for v in w)
+				if check_point ==3:
+					if o ==3: scores +=1
+					elif x==3: scores -=1
+				else:
+					if o == 2 and z ==1 and x == 0: scores += 1
+					elif x==2 and z ==1 and o ==0: scores -=1 
+
+		#diagonality (/) up, right
+		for r in range(2, rows):
+			for c in range (cols - 2):
+				w = [self.board_state[r-i,c+i] for i in range(3)]
+				o = sum(v ==1 for v in w)
+				x = sum(v==-1 for v in w)
+				z = sum(v ==0 for v in w)
+				if check_point ==3:
+					if o ==3: scores += 1
+					elif x==3: scores -= 1
+				else:
+					if o ==2 and z ==1 and x ==0: scores +=1
+					elif x==2 and z == 1 and o ==0: scores-=1
+
+
 		return scores
 
 	def get_negamax_scores(self, terminal):
@@ -48,16 +111,77 @@ class GameStatus:
 		cols = len(self.board_state[0])
 		scores = 0
 		check_point = 3 if terminal else 2
+
+		#horizontal windows
+		for r in range(rows):
+			for c in range(cols-2):
+				w = self.board_state[r, c:c+3]
+				o = (w==1).sum()
+				x = (w==-1).sum()
+				z = ( w== 0).sum()
+				if check_point == 3:
+					if o ==3: scores += 1
+					elif x ==3: scores -= 1
+				else:
+					if o ==2 and z==1 and x==0: scores += 1
+					elif x == 2 and z ==1 and o ==0: scores -= 1
+
+				
+		#vertical windows
+		for r in range(rows-2):
+			for c in range(cols):
+				w = self.board_state[r: r+3, c]
+				o = (w ==1).sum()
+				x = (w== -1).sum()
+				z = (w== 0).sum()
+				if check_point==3:
+					if o == 3: scores += 1
+					elif x ==3: scores -= 1
+				else:
+					if o ==2 and z ==1 and x==0: scores +=1
+					elif x==2 and z==1 and o == 0: scores -= 1
+
+
+		#diagonal (\)down, right
+		for r in range(rows -2):
+			for c in range(cols -2):
+				w = [self.board_state[r+i, c+i] for i in range(3)]
+				o = sum(v==1 for v in w)
+				x = sum(v==-1 for v in w)
+				z = sum(v==0 for v in w)
+				if check_point ==3:
+					if o ==3: scores +=1
+					elif x==3: scores -=1
+				else:
+					if o == 2 and z ==1 and x == 0: scores += 1
+					elif x==2 and z ==1 and o ==0: scores -=1 
+
+		#diagonality (/) up, right
+		for r in range(2, rows):
+			for c in range (cols -2):
+				w = [self.board_state[r-i,c+i] for i in range(3)]
+				o = sum(v ==1 for v in w)
+				x = sum(v==-1 for v in w)
+				z = sum(v ==0 for v in w)
+				if check_point ==3:
+					if o ==3: scores += 1
+					elif x==3: scores -= 1
+				else:
+					if o ==2 and z ==1 and x ==0: scores +=1
+					elif x==2 and z == 1 and o ==0: scores-=1
+
 		return scores
+
+		
 
 	def get_moves(self):
 		moves = []
-		state = self.board_states
+		state = self.board_state
 		state_rows, state_cols = state.shape
-		for rows in range(state_rows):
-			for cols in range(state_cols):
-				if state[rows, cols] == 0: # this is a legal move = enpty cell
-					moves.append((rows, cols))
+		for r in range(state_rows):
+			for c in range(state_cols):
+				if state[r, c] == 0: # this is a legal move = empty cell
+					moves.append((r, c))
 		return moves
 
 	def get_new_state(self, move):

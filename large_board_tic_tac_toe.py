@@ -116,7 +116,7 @@ class RandomBoardTicTacToe:
         self.game_state = self.game_state.get_new_state(move)
 
 
-    def play_ai(self):
+    def play_ai(self): 
         if self.algorithm == "minimax":
             score, best_move = minimax(self.game_state, depth=4, maximizingPlayer=self.game_state.turn_O) # if turn_O is True, then maximizing player
         else:
