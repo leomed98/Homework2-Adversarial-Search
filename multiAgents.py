@@ -9,7 +9,7 @@ def minimax(game_state: GameStatus, depth: int, maximizingPlayer: bool,
         return game_state.get_scores(terminal), None
 
     # Generate possible actions
-    possible_moves = game_state.get_possible_moves()
+    possible_moves = game_state.get_moves()
     if not possible_moves:
         # No move: treat as terminal
         return game_state.get_scores(True), None

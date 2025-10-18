@@ -34,7 +34,7 @@ class RandomBoardTicTacToe:
 
         # Grid Size
         self.GRID_SIZE = 4
-        self. OFFSET = 5
+        self.OFFSET = 5
 
         self.CIRCLE_COLOR = (140, 146, 172)
         self.CROSS_COLOR = (140, 146, 172)
@@ -58,9 +58,23 @@ class RandomBoardTicTacToe:
         self.screen.fill(self.BLACK)
         # Draw the grid
         
-        """
-        YOUR CODE HERE TO DRAW THE GRID OTHER CONTROLS AS PART OF THE GUI
-        """
+        for row in range(self.GRID_SIZE):
+            for column in range(self.GRID_SIZE):
+                x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
+                y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
+                rectangle = pygame.Rect(x, y, self.WIDTH, self.HEIGHT)
+                pygame.draw.rect(self.screen, self.WHITE, rectangle, width = 3 )
+        
+        
+        # Draw pieces on the board
+        for row in range(self.GRID_SIZE):
+            for column in range(self.GRID_SIZE):
+                x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
+                y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
+                if self.game_state.board_state[row][column] == 1:
+                    self.draw_cross(x, y)
+                elif self.game_state.board_state[row][column] == -1:
+                    self.draw_circle(x, y)
         
         pygame.display.update()
 
@@ -73,25 +87,29 @@ class RandomBoardTicTacToe:
 
 
     def draw_circle(self, x, y):
-        """
-        YOUR CODE HERE TO DRAW THE CIRCLE FOR THE NOUGHTS PLAYER
-        """
+       
+       circleX = x + self.WIDTH // 2
+       circleY = y + self.HEIGHT // 2
+       
+       radius = int(min(self.WIDTH, self.HEIGHT) * .35)
+       pygame.draw.circle(self.screen, self.CIRCLE_COLOR, (circleX, circleY), radius, width=3)
         
 
     def draw_cross(self, x, y):
-        """
-        YOUR CODE HERE TO DRAW THE CROSS FOR THE CROSS PLAYER AT THE CELL THAT IS SELECTED VIA THE gui
-        """
+        pad = int(min(self.WIDTH, self.HEIGHT) * .2)
+        x1, y1 = x + pad, y + pad
+        x2, y2 = x + self.WIDTH - pad, y + self.HEIGHT - pad
+        x3 = x + pad
+        y3 = y + self.HEIGHT - pad
+        x4 = x + self.WIDTH - pad
+        y4 = y + pad
+        pygame.draw.line(self.screen, self.CROSS_COLOR, (x1, y1), (x2, y2), width=3)
+        pygame.draw.line(self.screen, self.CROSS_COLOR, (x3, y3), (x4, y4), width=3)
         
 
     def is_game_over(self):
 
-        """
-        YOUR CODE HERE TO SEE IF THE GAME HAS TERMINATED AFTER MAKING A MOVE. YOU SHOULD USE THE IS_TERMINAL()
-        FUNCTION FROM GAMESTATUS_5120.PY FILE (YOU WILL FIRST NEED TO COMPLETE IS_TERMINAL() FUNCTION)
-        
-        YOUR RETURN VALUE SHOULD BE TRUE OR FALSE TO BE USED IN OTHER PARTS OF THE GAME
-        """
+        return self.game_state.is_terminal()
     
 
     def move(self, move):
@@ -99,15 +117,9 @@ class RandomBoardTicTacToe:
 
 
     def play_ai(self):
-        """
-        YOUR CODE HERE TO CALL MINIMAX OR NEGAMAX DEPENDEING ON WHICH ALGORITHM SELECTED FROM THE GUI
-        ONCE THE ALGORITHM RETURNS THE BEST MOVE TO BE SELECTED, YOU SHOULD DRAW THE NOUGHT (OR CIRCLE DEPENDING
-        ON WHICH SYMBOL YOU SELECTED FOR THE AI PLAYER)
-        
-        THE RETURN VALUES FROM YOUR MINIMAX/NEGAMAX ALGORITHM SHOULD BE THE SCORE, MOVE WHERE SCORE IS AN INTEGER
-        NUMBER AND MOVE IS AN X,Y LOCATION RETURNED BY THE AGENT
-        """
-        
+        if self.algorithm == "minimax":
+            score, best_move 
+
         self.change_turn()
         pygame.display.update()
         terminal = self.game_state.is_terminal()
