@@ -118,21 +118,37 @@ class RandomBoardTicTacToe:
 
     def play_ai(self):
         if self.algorithm == "minimax":
-            score, best_move 
-
-        self.change_turn()
+            score, best_move = minimax(self.game_state, depth=4, maximizing_player=self.game_state.turn_O) # if turn_O is True, then maximizing player
+        else:
+            tm = 1 if self.game_state.turn_O else -1 # turn multiplier for sign to match player turn
+            score, best_move = negamax(self.game_state, depth=4, turn_multiplier=tm)
+        
+        if best_move is not None: # in case there are no possible moves
+            self.game_state = self.game_state.get_new_state(best_move)
+        
+        self.draw_game() # redraw the game after AI move 
+        
+        self.change_turn() # change turn display
         pygame.display.update()
-        terminal = self.game_state.is_terminal()
-        """ USE self.game_state.get_scores(terminal) HERE TO COMPUTE AND DISPLAY THE FINAL SCORES """
+        
+        terminal = self.game_state.is_terminal() # cgeck if game is over
+        if terminal:
+            
+            final_score = self.game_state.get_scores(terminal = True)
+            
+            result_screen = "Winner: {self.game_state.winner} with score {final_score}"
 
 
 
     def game_reset(self):
-        self.draw_game()
-        """
-        YOUR CODE HERE TO RESET THE BOARD TO VALUE 0 FOR ALL CELLS AND CREATE A NEW GAME STATE WITH NEWLY INITIALIZED
-        BOARD STATE
-        """
+        
+        new_board = np.zeros((self.GRID_SIZE, self.GRID_SIZE), dtype=int) # create empty board
+        
+        self.game_state = GameStatus(new_board, turn_O=True) # O starts first
+        
+        self.draw_game() # draw the empty board
+        
+        self.change_turn() # set turn display
         
         pygame.display.update()
 
@@ -140,45 +156,104 @@ class RandomBoardTicTacToe:
         done = False
 
         clock = pygame.time.Clock()
+        
+        self.draw_game()
+        pygame.display.update()
 
 
         while not done:
             for event in pygame.event.get():  # User did something
-                """
-                YOUR CODE HERE TO CHECK IF THE USER CLICKED ON A GRID ITEM. EXIT THE GAME IF THE USER CLICKED EXIT
-                """
+               
+               if event.type == pygame.QUIT:  # If user clicked close
+                   done = True  # Flag that we are done so we exit this loop
+                   break
+               
+               if event.type == pygame.KEYDOWN: # key press event
+                     if event.key == pygame.K_ESCAPE: # exit the game if 'Esc' is pressed
+                            done = True
+                            break
+                     if event.key == pygame.K_r: # reset the game if 'r' is pressed
+                          self.game_reset()
+                          continue
+                        
+               
+               if self.game_state.is_terminal():
+                   final_score = self.game_state.get_scores(terminal = True)
+                   print(f"Game Over! Winner: {self.game_state.winner} with score {final_score}")
+                   pygame.display.update()
+                   continue
+               
+               
+               
+               if event.type == pygame.MOUSEBUTTONUP: # mouse click event
+                   mousex, mousey = event.pos
+                   cell_w = self.WIDTH + self.MARGIN
+                   cell_h = self.HEIGHT + self.MARGIN
+                   cell = (mousex // cell_w)
+                   row = (mousey // cell_h) - 1 # adjust for top margin
+                   
+                   
+               if 0 <= row < self.GRID_SIZE and 0 <= cell < self.GRID_SIZE: # check for valid click inside the grid
+                   
+                   if self.game_state.board_state[row, cell] == 0: # only allow move if cell is empty
+                       # player move
+                       self.game_state = self.game_state.get_new_state((row, cell))
+                       self.draw_game()
+                       self.change_turn()
+                       pygame.display.update()
+                       
+                       # ai move
+                       if mode == "player_vs_ai" and not self.is_terminal():
+                            self.play_ai()
+                       
+                   
                 
-                """
-                YOUR CODE HERE TO HANDLE THE SITUATION IF THE GAME IS OVER. IF THE GAME IS OVER THEN DISPLAY THE SCORE,
-                THE WINNER, AND POSSIBLY WAIT FOR THE USER TO CLEAR THE BOARD AND START THE GAME AGAIN (OR CLICK EXIT)
-                """
-                    
-                """
-                YOUR CODE HERE TO NOW CHECK WHAT TO DO IF THE GAME IS NOT OVER AND THE USER SELECTED A NON EMPTY CELL
-                IF CLICKED A NON EMPTY CELL, THEN GET THE X,Y POSITION, SET ITS VALUE TO 1 (SELECTED BY HUMAN PLAYER),
-                DRAW CROSS (OR NOUGHT DEPENDING ON WHICH SYMBOL YOU CHOSE FOR YOURSELF FROM THE gui) AND CALL YOUR 
-                PLAY_AI FUNCTION TO LET THE AGENT PLAY AGAINST YOU
-                """
-                
-                # if event.type == pygame.MOUSEBUTTONUP:
-                    # Get the position
-                    
-                    # Change the x/y screen coordinates to grid coordinates
-                    
-                    # Check if the game is human vs human or human vs AI player from the GUI. 
-                    # If it is human vs human then your opponent should have the value of the selected cell set to -1
-                    # Then draw the symbol for your opponent in the selected cell
-                    # Within this code portion, continue checking if the game has ended by using is_terminal function
-                    
-            # Update the screen with what was drawn.
+                   
             pygame.display.update()
 
         pygame.quit()
 
 tictactoegame = RandomBoardTicTacToe()
-"""
-YOUR CODE HERE TO SELECT THE OPTIONS VIA THE GUI CALLED FROM THE ABOVE LINE
-AFTER THE ABOVE LINE, THE USER SHOULD SELECT THE OPTIONS AND START THE GAME. 
-YOUR FUNCTION PLAY_GAME SHOULD THEN BE CALLED WITH THE RIGHT OPTIONS AS SOON
-AS THE USER STARTS THE GAME
-"""
+def menu(game):
+    pygame.init()
+    screen = pygame.display.set_mode((400, 300))
+    pygame.display.set_caption("Tic Tac Toe Menu")
+    font = pygame.font.Font(None, 36)
+    
+    algorithms = ["minimax", "negamax"]
+    mode = "player_vs_ai"
+    
+    minimax_button = pygame.Rect(50, 50, 300, 50)
+    negamax_button = pygame.Rect(50, 120, 300, 50)
+    start_button = pygame.Rect(50, 200, 300, 50)
+    
+    running = True
+    while running:
+        screen.fill((50, 50, 50))
+        
+        title = font.render("Select Algorithm", True, (255, 255, 255))
+        screen.blit(title, (100, 10))
+        
+        #buttons
+        pygame.draw.rect(screen, (100, 100, 200) if algorithms == "minimax" else(100, 100, 100),  minimax_button)
+        pygame.draw.rect(screen, (100, 100, 200) if algorithms == "negamax" else(100,100,100), negamax_button)
+        pygame.draw.rect(screen, (100, 200, 100), start_button)
+        
+        screen.blit(font.render("Minimax", True, (255, 255, 255)), (minimax_button.x + 100, minimax_button.y + 10))
+        screen.blit(font.render("Negamax", True, (255, 255, 255)), (negamax_button.x + 100, negamax_button.y + 10))
+        screen.blit(font.render("Start Game", True, (255, 255, 255)), (start_button.x + 80, start_button.y + 10))
+        
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if minimax_button.collidepoint(event.pos):
+                    algorithms = "minimax"
+                elif negamax_button.collidepoint(event.pos):
+                    algorithms = "negamax"
+                elif start_button.collidepoint(event.pos):
+                    game.algorithm = algorithms
+                    running = False
+                
+menu(tictactoegame)
