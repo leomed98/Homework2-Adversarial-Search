@@ -52,7 +52,7 @@ class RandomBoardTicTacToe:
 
     def draw_game(self):
         # Create a 2 dimensional array using the column and row variables
-        pygame.init()
+        
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption("Tic Tac Toe Random Grid")
         self.screen.fill(self.BLACK)
@@ -136,7 +136,7 @@ class RandomBoardTicTacToe:
             
             final_score = self.game_state.get_scores(terminal = True)
             
-            result_screen = f"Winner: {self.game_state.winner} with score {final_score}"
+            print(f"Winner: {self.game_state.winner} with score {final_score}")
 
 
 
@@ -253,7 +253,12 @@ def menu(game):
                 elif negamax_button.collidepoint(event.pos):
                     algorithms = "negamax"
                 elif start_button.collidepoint(event.pos):
-                    game.algorithm = algorithms
+                    game.algorithm = selected_algorithm
+                    game.grid_size = 4
+                    board = np.zeros((game.grid_size, game.grid_size), dtype=int)
+                    game.game_state = GameStatus(board, turn_O=True)
+                    game.draw_game()
+                    pygame.display.update()
                     game.play_game(mode)
                     running = False
                 
