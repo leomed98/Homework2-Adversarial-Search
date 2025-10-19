@@ -118,7 +118,7 @@ class RandomBoardTicTacToe:
 
     def play_ai(self):
         if self.algorithm == "minimax":
-            score, best_move = minimax(self.game_state, depth=4, maximizing_player=self.game_state.turn_O) # if turn_O is True, then maximizing player
+            score, best_move = minimax(self.game_state, depth=4, maximizingPlayer=self.game_state.turn_O) # if turn_O is True, then maximizing player
         else:
             tm = 1 if self.game_state.turn_O else -1 # turn multiplier for sign to match player turn
             score, best_move = negamax(self.game_state, depth=4, turn_multiplier=tm)
@@ -136,7 +136,7 @@ class RandomBoardTicTacToe:
             
             final_score = self.game_state.get_scores(terminal = True)
             
-            result_screen = "Winner: {self.game_state.winner} with score {final_score}"
+            result_screen = f"Winner: {self.game_state.winner} with score {final_score}"
 
 
 
@@ -190,21 +190,21 @@ class RandomBoardTicTacToe:
                    cell_w = self.WIDTH + self.MARGIN
                    cell_h = self.HEIGHT + self.MARGIN
                    cell = (mousex // cell_w)
-                   row = (mousey // cell_h) - 1 # adjust for top margin
+                   row = (mousey // cell_h)  # adjust for top margin
                    
                    
-               if 0 <= row < self.GRID_SIZE and 0 <= cell < self.GRID_SIZE: # check for valid click inside the grid
-                   
-                   if self.game_state.board_state[row, cell] == 0: # only allow move if cell is empty
-                       # player move
-                       self.game_state = self.game_state.get_new_state((row, cell))
-                       self.draw_game()
-                       self.change_turn()
-                       pygame.display.update()
+                   if 0 <= row < self.GRID_SIZE and 0 <= cell < self.GRID_SIZE: # check for valid click inside the grid
                        
-                       # ai move
-                       if mode == "player_vs_ai" and not self.is_terminal():
-                            self.play_ai()
+                       if self.game_state.board_state[row, cell] == 0: # only allow move if cell is empty
+                           # player move
+                           self.game_state = self.game_state.get_new_state((row, cell))
+                           self.draw_game()
+                           self.change_turn()
+                           pygame.display.update()
+                           
+                           # ai move
+                           if mode == "player_vs_ai" and not self.game_state.is_terminal():
+                               self.play_ai()
                        
                    
                 
@@ -220,7 +220,7 @@ def menu(game):
     pygame.display.set_caption("Tic Tac Toe Menu")
     font = pygame.font.Font(None, 36)
     
-    algorithms = ["minimax", "negamax"]
+    selected_algorithm = "minimax"
     mode = "player_vs_ai"
     
     minimax_button = pygame.Rect(50, 50, 300, 50)
@@ -235,8 +235,8 @@ def menu(game):
         screen.blit(title, (100, 10))
         
         #buttons
-        pygame.draw.rect(screen, (100, 100, 200) if algorithms == "minimax" else(100, 100, 100),  minimax_button)
-        pygame.draw.rect(screen, (100, 100, 200) if algorithms == "negamax" else(100,100,100), negamax_button)
+        pygame.draw.rect(screen, (100, 100, 200) if selected_algorithm == "minimax" else(100, 100, 100),  minimax_button)
+        pygame.draw.rect(screen, (100, 100, 200) if selected_algorithm == "negamax" else(100,100,100), negamax_button)
         pygame.draw.rect(screen, (100, 200, 100), start_button)
         
         screen.blit(font.render("Minimax", True, (255, 255, 255)), (minimax_button.x + 100, minimax_button.y + 10))
@@ -254,6 +254,7 @@ def menu(game):
                     algorithms = "negamax"
                 elif start_button.collidepoint(event.pos):
                     game.algorithm = algorithms
+                    game.play_game(mode)
                     running = False
                 
 menu(tictactoegame)
