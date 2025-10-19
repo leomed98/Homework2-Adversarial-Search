@@ -62,7 +62,7 @@ class RandomBoardTicTacToe:
             for column in range(self.GRID_SIZE):
                 x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
                 y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
-                rectangle = pygame.Rect(x, y, self.WIDTH, self.HEIGHT)
+                rectangle = pygame.Rect (int(x), int(y), int(self.WIDTH), int(self.HEIGHT))
                 pygame.draw.rect(self.screen, self.WHITE, rectangle, width = 3 )
         
         
@@ -71,9 +71,9 @@ class RandomBoardTicTacToe:
             for column in range(self.GRID_SIZE):
                 x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
                 y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
-                if self.game_state.board_state[row][column] == 1:
+                if self.game_state.board_state[row, column] == 1:
                     self.draw_cross(x, y)
-                elif self.game_state.board_state[row][column] == -1:
+                elif self.game_state.board_state[row, column] == -1:
                     self.draw_circle(x, y)
         
         pygame.display.update()
@@ -88,8 +88,8 @@ class RandomBoardTicTacToe:
 
     def draw_circle(self, x, y):
        
-       circleX = x + self.WIDTH // 2
-       circleY = y + self.HEIGHT // 2
+       circleX = int(x + self.WIDTH // 2)
+       circleY = int(y + self.HEIGHT // 2)
        
        radius = int(min(self.WIDTH, self.HEIGHT) * .35)
        pygame.draw.circle(self.screen, self.CIRCLE_COLOR, (circleX, circleY), radius, width=3)
@@ -97,12 +97,11 @@ class RandomBoardTicTacToe:
 
     def draw_cross(self, x, y):
         pad = int(min(self.WIDTH, self.HEIGHT) * .2)
-        x1, y1 = x + pad, y + pad
-        x2, y2 = x + self.WIDTH - pad, y + self.HEIGHT - pad
-        x3 = x + pad
-        y3 = y + self.HEIGHT - pad
-        x4 = x + self.WIDTH - pad
-        y4 = y + pad
+        x1, y1 = int(x + pad), int(y + pad)
+        x2, y2 = int(x + self.WIDTH - pad), int(y + self.HEIGHT - pad)
+        x3, y3 = int(x + pad), int(y + self.HEIGHT - pad)
+        x4, y4 = int(x + self.WIDTH - pad), int( y + pad)
+       
         pygame.draw.line(self.screen, self.CROSS_COLOR, (x1, y1), (x2, y2), width=3)
         pygame.draw.line(self.screen, self.CROSS_COLOR, (x3, y3), (x4, y4), width=3)
         
@@ -187,14 +186,22 @@ class RandomBoardTicTacToe:
                
                if event.type == pygame.MOUSEBUTTONUP: # mouse click event
                    mousex, mousey = event.pos
+                   if mousey < 40:
+                       continue #ignore clicks above grid
+                   
                    cell_w = self.WIDTH + self.MARGIN
                    cell_h = self.HEIGHT + self.MARGIN
-                   cell = (mousex // cell_w)
-                   row = (mousey // cell_h)  # adjust for top margin
+
+                   grid_x = mousex - self.MARGIN
+                   grid_y = mousey - 40 - self.MARGIN
+
+                   cell = int(grid_x // cell_w)
+                   row = int(grid_y // cell_h)  # adjust for top margin
                    
                    
                    if 0 <= row < self.GRID_SIZE and 0 <= cell < self.GRID_SIZE: # check for valid click inside the grid
-                       
+                       print("row:", row, type(row), "cell:", cell , type(cell))
+                       print("board_state type:", type(self.game_state.board_state))
                        if self.game_state.board_state[row, cell] == 0: # only allow move if cell is empty
                            # player move
                            self.game_state = self.game_state.get_new_state((row, cell))
@@ -249,13 +256,13 @@ def menu(game):
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if minimax_button.collidepoint(event.pos):
-                    algorithms = "minimax"
+                    selected_algorithm = "minimax"
                 elif negamax_button.collidepoint(event.pos):
-                    algorithms = "negamax"
+                    selected_algorithm = "negamax"
                 elif start_button.collidepoint(event.pos):
                     game.algorithm = selected_algorithm
-                    game.grid_size = 4
-                    board = np.zeros((game.grid_size, game.grid_size), dtype=int)
+                    game.GRID_SIZE = 4
+                    board = np.zeros((game.GRID_SIZE, game.GRID_SIZE), dtype=int)
                     game.game_state = GameStatus(board, turn_O=True)
                     game.draw_game()
                     pygame.display.update()
