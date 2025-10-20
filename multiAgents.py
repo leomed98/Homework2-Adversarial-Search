@@ -46,21 +46,10 @@ def minimax(game_state: GameStatus, depth: int, maximizingPlayer: bool,
 
 
 
-	#"""
-   # YOUR CODE HERE TO FIRST CHECK WHICH PLAYER HAS CALLED THIS FUNCTION (MAXIMIZING OR MINIMIZING PLAYER)
-   # YOU SHOULD THEN IMPLEMENT MINIMAX WITH ALPHA-BETA PRUNING AND RETURN THE FOLLOWING TWO ITEMS
-   # 1. VALUE
-   # 2. BEST_MOVE
-    
-   # THE LINE TO RETURN THESE TWO IS COMMENTED BELOW WHICH YOU CAN USE
-    #"""
-
-	# return value, best_move
-
 def negamax(game_status: GameStatus, depth: int, turn_multiplier: int,
             alpha: float = float('-inf'), beta: float = float('inf')):
     """
-    Negamax with alpha–beta pruning.
+    Negamax with alpha-beta pruning.
     turn_multiplier: +1 for the side we're evaluating for, -1 for adversary
     """
     terminal = game_status.is_terminal()

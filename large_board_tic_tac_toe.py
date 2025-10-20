@@ -1,19 +1,3 @@
-"""
-PLEASE READ THE COMMENTS BELOW AND THE HOMEWORK DESCRIPTION VERY CAREFULLY BEFORE YOU START CODING
-
- The file where you will need to create the GUI which should include (i) drawing the grid, (ii) call your Minimax/Negamax functions
- at each step of the game, (iii) allowing the controls on the GUI to be managed (e.g., setting board size, using 
-                                                                                 Minimax or Negamax, and other options)
- In the example below, grid creation is supported using pygame which you can use. You are free to use any other 
- library to create better looking GUI with more control. In the __init__ function, GRID_SIZE (Line number 36) is the variable that
- sets the size of the grid. Once you have the Minimax code written in multiAgents.py file, it is recommended to test
- your algorithm (with alpha-beta pruning) on a 3x3 GRID_SIZE to see if the computer always tries for a draw and does 
- not let you win the game. Here is a video tutorial for using pygame to create grids http://youtu.be/mdTeqiWyFnc
- 
- 
- PLEASE CAREFULLY SEE THE PORTIONS OF THE CODE/FUNCTIONS WHERE IT INDICATES "YOUR CODE BELOW" TO COMPLETE THE SECTIONS
- 
-"""
 import pygame
 import numpy as np
 from GameStatus_5120 import GameStatus
@@ -72,9 +56,21 @@ class RandomBoardTicTacToe:
                 x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
                 y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
                 if self.game_state.board_state[row, column] == 1:
+<<<<<<< HEAD
+<<<<<<< HEAD
                     self.draw_circle(x, y)
                 elif self.game_state.board_state[row, column] == -1:
                     self.draw_cross(x, y)
+=======
+                    self.draw_circle(x, y) #1=O
+                elif self.game_state.board_state[row, column] == -1:
+                    self.draw_cross(x, y) #-1=X
+>>>>>>> 8fbe3b7 (finished pretty much)
+=======
+                    self.draw_circle(x, y)
+                elif self.game_state.board_state[row, column] == -1:
+                    self.draw_cross(x, y)
+>>>>>>> 8a1f262 (Fixed Menu)
         
         pygame.display.update()
 
@@ -187,22 +183,22 @@ class RandomBoardTicTacToe:
                    if mousey < 40:
                        continue #ignore clicks above grid
                    
-                   cell_w = self.WIDTH + self.MARGIN
-                   cell_h = self.HEIGHT + self.MARGIN
+                   col_w = self.WIDTH + self.MARGIN
+                   col_h = self.HEIGHT + self.MARGIN
 
                    grid_x = mousex - self.MARGIN
                    grid_y = mousey - 40 - self.MARGIN
 
-                   cell = int(grid_x // cell_w)
-                   row = int(grid_y // cell_h)  # adjust for top margin
+                   col = int(grid_x // col_w)
+                   row = int(grid_y // col_h)  # adjust for top margin
                    
                    
-                   if 0 <= row < self.GRID_SIZE and 0 <= cell < self.GRID_SIZE: # check for valid click inside the grid
-                       print("row:", row, type(row), "cell:", cell , type(cell))
+                   if 0 <= row < self.GRID_SIZE and 0 <= col < self.GRID_SIZE: # check for valid click inside the grid
+                       print("row:", row, type(row), "col:", col , type(col))
                        print("board_state type:", type(self.game_state.board_state))
-                       if self.game_state.board_state[row, cell] == 0: # only allow move if cell is empty
+                       if self.game_state.board_state[row, col] == 0: # only allow move if cell is empty
                            # player move
-                           self.game_state = self.game_state.get_new_state((row, cell))
+                           self.game_state = self.game_state.get_new_state((row, col))
                            self.draw_game()
                            self.change_turn()
                            pygame.display.update()
@@ -266,7 +262,7 @@ def menu(game): # simple menu to select options before starting the game
             if event.type == pygame.QUIT: # If user clicked close
                 running = False
             
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONUP:
                 if minimax_button.collidepoint(event.pos):
                     selected_algorithm = "minimax"
                
