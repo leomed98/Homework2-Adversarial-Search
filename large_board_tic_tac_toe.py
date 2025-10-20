@@ -221,26 +221,29 @@ class RandomBoardTicTacToe:
         pygame.quit()
 
 tictactoegame = RandomBoardTicTacToe()
-def menu(game):
+def menu(game): # simple menu to select options before starting the game
     pygame.init()
+    grid_size = 4
     screen = pygame.display.set_mode((400, 300))
     pygame.display.set_caption("Tic Tac Toe Menu")
     font = pygame.font.Font(None, 36)
+    player_symbol_O = True # default human is O
     
     selected_algorithm = "minimax"
     selected_mode = "player_vs_ai"
     
     minimax_button = pygame.Rect(50, 50, 300, 50)
     negamax_button = pygame.Rect(50, 120, 300, 50)
-    mode_button = pygame.Rect(50, 170, 300, 50) 
+    mode_button = pygame.Rect(50, 170, 300, 50) # player vs ai or player vs player
     grid_size_button = pygame.Rect(50, 240, 300, 50)
+    player_symbol_button = pygame.Rect(50, 290, 300, 50) # x or o selection
     start_button = pygame.Rect(50, 200, 300, 50)
     
     running = True
     while running:
         screen.fill((50, 50, 50))
         
-        title = font.render("Select Algorithm", True, (255, 255, 255))
+        title = font.render("Select Algorithm", True, (255, 255, 255)) # title
         screen.blit(title, (100, 10))
         
         #buttons
@@ -249,28 +252,41 @@ def menu(game):
         pygame.draw.rect(screen, (100, 200, 100), start_button)
         pygame.draw.rect(screen, (100, 100, 200), mode_button)
         pygame.draw.rect(screen, (100, 100, 100), grid_size_button)
+        pygame.draw.rect(screen, (100, 100, 100), player_symbol_button)
         
+        # button labels
         screen.blit(font.render("Minimax", True, (255, 255, 255)), (minimax_button.x + 100, minimax_button.y + 10))
         screen.blit(font.render("Negamax", True, (255, 255, 255)), (negamax_button.x + 100, negamax_button.y + 10))
-        model_label = "Player vs AI" if selected_mode == "player_vs_ai" else " Player vs Player"
+        mode_label = "Player vs AI" if selected_mode == "player_vs_ai" else " Player vs Player"
         screen.blit(font.render("Start Game", True, (255, 255, 255)), (start_button.x + 80, start_button.y + 10))
-        screen.blit(font.render(f"Mode: {model_label}", True, (255, 255, 255)), (mode_button.x + 50, mode_button.y + 10))
-        screen.blit(font.render("Grid Size: 4x4", True, (255, 255, 255)), (grid_size_button.x + 70, grid_size_button.y + 10))
+        screen.blit(font.render(f"Mode: {mode_label}", True, (255, 255, 255)), (mode_button.x + 50, mode_button.y + 10))
+        screen.blit(font.render(f"Player is :{'O' if player_symbol_O else 'X'} " ,True , (255, 255, 255)), (player_symbol_button.x + 70, player_symbol_button.y + 10)) # toggle for X/O
+        screen.blit(font.render(f"Grid Size: {grid_size} x {grid_size} ", True, (255, 255, 255)), (grid_size_button.x + 70, grid_size_button.y + 10))
         
         pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in pygame.event.get(): # User did something
+            if event.type == pygame.QUIT: # If user clicked close
                 running = False
+            
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if minimax_button.collidepoint(event.pos):
                     selected_algorithm = "minimax"
+               
                 elif negamax_button.collidepoint(event.pos):
                     selected_algorithm = "negamax"
-                elif mode_button.collidepoint(event.pos):
+               
+                elif mode_button.collidepoint(event.pos): # toggle mode
                     selected_mode = "player_vs_player" if selected_mode == "player_vs_ai" else "player_vs_ai"
+                
                 elif grid_size_button.collidepoint(event.pos):
                     grid_size = 3 if grid_size == 5 else grid_size + 1 # For simplicity, we set it to 4. You can expand this to allow user input.
-                elif start_button.collidepoint(event.pos):
+                
+                elif player_symbol_button.collidepoint(event.pos): # toggle player symbol
+                    player_symbol_O = not player_symbol_O
+                
+                elif start_button.collidepoint(event.pos): # start the game with selected options
+                    
+                    # initialize game with selected options
                     game.algorithm = selected_algorithm
                     game.GRID_SIZE = grid_size
                     board = np.zeros((game.GRID_SIZE, game.GRID_SIZE), dtype=int)
