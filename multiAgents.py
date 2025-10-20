@@ -49,7 +49,7 @@ def minimax(game_state: GameStatus, depth: int, maximizingPlayer: bool,
 def negamax(game_status: GameStatus, depth: int, turn_multiplier: int,
             alpha: float = float('-inf'), beta: float = float('inf')):
     """
-    Negamax with alpha–beta pruning.
+    Negamax with alpha-beta pruning.
     turn_multiplier: +1 for the side we're evaluating for, -1 for adversary
     """
     terminal = game_status.is_terminal()
