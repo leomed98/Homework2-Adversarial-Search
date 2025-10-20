@@ -20,7 +20,7 @@ from GameStatus_5120 import GameStatus
 from multiAgents import minimax, negamax
 import sys, random
 
-mode = "player_vs_ai" # default mode for playing the game (player vs AI)
+selected_mode = "player_vs_ai" # default mode for playing the game (player vs AI)
 
 class RandomBoardTicTacToe:
     def __init__(self, size = (600, 600)):
@@ -228,10 +228,12 @@ def menu(game):
     font = pygame.font.Font(None, 36)
     
     selected_algorithm = "minimax"
-    mode = "player_vs_ai"
+    selected_mode = "player_vs_ai"
     
     minimax_button = pygame.Rect(50, 50, 300, 50)
     negamax_button = pygame.Rect(50, 120, 300, 50)
+    mode_button = pygame.Rect(50, 170, 300, 50) 
+    grid_size_button = pygame.Rect(50, 240, 300, 50)
     start_button = pygame.Rect(50, 200, 300, 50)
     
     running = True
@@ -245,10 +247,15 @@ def menu(game):
         pygame.draw.rect(screen, (100, 100, 200) if selected_algorithm == "minimax" else(100, 100, 100),  minimax_button)
         pygame.draw.rect(screen, (100, 100, 200) if selected_algorithm == "negamax" else(100,100,100), negamax_button)
         pygame.draw.rect(screen, (100, 200, 100), start_button)
+        pygame.draw.rect(screen, (100, 100, 200), mode_button)
+        pygame.draw.rect(screen, (100, 100, 100), grid_size_button)
         
         screen.blit(font.render("Minimax", True, (255, 255, 255)), (minimax_button.x + 100, minimax_button.y + 10))
         screen.blit(font.render("Negamax", True, (255, 255, 255)), (negamax_button.x + 100, negamax_button.y + 10))
+        model_label = "Player vs AI" if selected_mode == "player_vs_ai" else " Player vs Player"
         screen.blit(font.render("Start Game", True, (255, 255, 255)), (start_button.x + 80, start_button.y + 10))
+        screen.blit(font.render(f"Mode: {model_label}", True, (255, 255, 255)), (mode_button.x + 50, mode_button.y + 10))
+        screen.blit(font.render("Grid Size: 4x4", True, (255, 255, 255)), (grid_size_button.x + 70, grid_size_button.y + 10))
         
         pygame.display.flip()
         for event in pygame.event.get():
@@ -259,14 +266,18 @@ def menu(game):
                     selected_algorithm = "minimax"
                 elif negamax_button.collidepoint(event.pos):
                     selected_algorithm = "negamax"
+                elif mode_button.collidepoint(event.pos):
+                    selected_mode = "player_vs_player" if selected_mode == "player_vs_ai" else "player_vs_ai"
+                elif grid_size_button.collidepoint(event.pos):
+                    grid_size = 3 if grid_size == 5 else grid_size + 1 # For simplicity, we set it to 4. You can expand this to allow user input.
                 elif start_button.collidepoint(event.pos):
                     game.algorithm = selected_algorithm
-                    game.GRID_SIZE = 4
+                    game.GRID_SIZE = grid_size
                     board = np.zeros((game.GRID_SIZE, game.GRID_SIZE), dtype=int)
                     game.game_state = GameStatus(board, turn_O=True)
                     game.draw_game()
                     pygame.display.update()
-                    game.play_game(mode)
+                    game.play_game(mode = selected_mode)
                     running = False
                 
 menu(tictactoegame)
