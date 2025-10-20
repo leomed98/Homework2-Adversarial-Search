@@ -33,6 +33,10 @@ class GameStatus:
 		NEGATIVE (AI PLAYER WINS), OR 0 (DRAW)
 		
 		"""
+
+		#if terminal:
+		# +1 for 0 having a complete 3 in a row
+		# -1 for for X having a 3 in a row
 		
 		rows = len(self.board_state)
 		cols = len(self.board_state[0])
@@ -107,6 +111,8 @@ class GameStatus:
 																			   FOR HUMAN PLAYER INSTEAD OF 
 																			   SCORES = SCORES + 1)
 		"""
+#pretty much the same as get_scores with a few tweaks
+
 		rows = len(self.board_state)
 		cols = len(self.board_state[0])
 		scores = 0
@@ -173,7 +179,7 @@ class GameStatus:
 		return scores
 
 		
-
+	# returns all legal moves (empty cells) as a list for rows/cols
 	def get_moves(self):
 		moves = []
 		state = self.board_state
@@ -183,7 +189,8 @@ class GameStatus:
 				if state[r, c] == 0: # this is a legal move = empty cell
 					moves.append((r, c))
 		return moves
-
+	
+	#return game status copies current board and places the players mark
 	def get_new_state(self, move):
 		new_board_state = self.board_state.copy()
 		x, y = move[0], move[1]

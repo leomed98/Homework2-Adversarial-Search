@@ -72,9 +72,15 @@ class RandomBoardTicTacToe:
                 x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
                 y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
                 if self.game_state.board_state[row, column] == 1:
+<<<<<<< HEAD
                     self.draw_circle(x, y)
                 elif self.game_state.board_state[row, column] == -1:
                     self.draw_cross(x, y)
+=======
+                    self.draw_circle(x, y) #1=O
+                elif self.game_state.board_state[row, column] == -1:
+                    self.draw_cross(x, y) #-1=X
+>>>>>>> 8fbe3b7 (finished pretty much)
         
         pygame.display.update()
 
