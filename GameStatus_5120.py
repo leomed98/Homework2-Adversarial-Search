@@ -42,10 +42,10 @@ class GameStatus:
 		#horizontal windows
 		for r in range(rows): #r = rows
 			for c in range(cols-2): #c=cols
-				w = self.board_state[r, c:c+3]
-				o = (w==1).sum()
-				x = (w==-1).sum()
-				z = ( w== 0).sum()
+				w = self.board_state[r, c:c+3] #w = 3 cell window you are checking
+				o = (w==1).sum() #represent cross 
+				x = (w==-1).sum() #represents circle
+				z = ( w== 0).sum() #empty cells (0) cells with no X or O
 				if check_point == 3:
 					if o ==3: scores += 1
 					elif x ==3: scores -= 1
