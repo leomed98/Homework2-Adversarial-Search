@@ -72,9 +72,9 @@ class RandomBoardTicTacToe:
                 x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
                 y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
                 if self.game_state.board_state[row, column] == 1:
-                    self.draw_cross(x, y)
-                elif self.game_state.board_state[row, column] == -1:
                     self.draw_circle(x, y)
+                elif self.game_state.board_state[row, column] == -1:
+                    self.draw_cross(x, y)
         
         pygame.display.update()
 
@@ -224,7 +224,7 @@ tictactoegame = RandomBoardTicTacToe()
 def menu(game): # simple menu to select options before starting the game
     pygame.init()
     grid_size = 4
-    screen = pygame.display.set_mode((400, 300))
+    screen = pygame.display.set_mode((430, 480))
     pygame.display.set_caption("Tic Tac Toe Menu")
     font = pygame.font.Font(None, 36)
     player_symbol_O = True # default human is O
@@ -234,10 +234,10 @@ def menu(game): # simple menu to select options before starting the game
     
     minimax_button = pygame.Rect(50, 50, 300, 50)
     negamax_button = pygame.Rect(50, 120, 300, 50)
-    mode_button = pygame.Rect(50, 170, 300, 50) # player vs ai or player vs player
-    grid_size_button = pygame.Rect(50, 240, 300, 50)
-    player_symbol_button = pygame.Rect(50, 290, 300, 50) # x or o selection
-    start_button = pygame.Rect(50, 200, 300, 50)
+    mode_button = pygame.Rect(50, 190, 330, 50) # player vs ai or player vs player
+    grid_size_button = pygame.Rect(50, 260, 300, 50)
+    player_symbol_button = pygame.Rect(50, 330, 300, 50) # x or o selection
+    start_button = pygame.Rect(50, 400, 300, 50)
     
     running = True
     while running:
@@ -249,10 +249,10 @@ def menu(game): # simple menu to select options before starting the game
         #buttons
         pygame.draw.rect(screen, (100, 100, 200) if selected_algorithm == "minimax" else(100, 100, 100),  minimax_button)
         pygame.draw.rect(screen, (100, 100, 200) if selected_algorithm == "negamax" else(100,100,100), negamax_button)
-        pygame.draw.rect(screen, (100, 200, 100), start_button)
         pygame.draw.rect(screen, (100, 100, 200), mode_button)
         pygame.draw.rect(screen, (100, 100, 100), grid_size_button)
         pygame.draw.rect(screen, (100, 100, 100), player_symbol_button)
+        pygame.draw.rect(screen, (100, 100, 200), start_button)
         
         # button labels
         screen.blit(font.render("Minimax", True, (255, 255, 255)), (minimax_button.x + 100, minimax_button.y + 10))
