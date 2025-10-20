@@ -153,8 +153,6 @@ class RandomBoardTicTacToe:
 
     def play_game(self, mode = "player_vs_ai"):
         done = False
-
-        clock = pygame.time.Clock()
         
         self.draw_game()
         pygame.display.update()
@@ -164,7 +162,7 @@ class RandomBoardTicTacToe:
             for event in pygame.event.get():  
                
                if event.type == pygame.QUIT:  # If user clicked close
-                   done = True  # Flag that we are done so we exit this loop
+                   done = True  
                    break
                
                if event.type == pygame.KEYDOWN: # key press event
@@ -292,7 +290,6 @@ def menu(game): # simple menu to select options before starting the game
                     board = np.zeros((game.GRID_SIZE, game.GRID_SIZE), dtype=int)
                     game.game_state = GameStatus(board, turn_O=True)
                     game.draw_game()
-                    pygame.display.update()
                     game.play_game(mode = selected_mode)
                     running = False
                 
