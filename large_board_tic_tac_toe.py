@@ -4,7 +4,7 @@ from GameStatus_5120 import GameStatus
 from multiAgents import minimax, negamax
 import sys, random
 
-selected_mode = "player_vs_ai" # default mode for playing the game (player vs AI)
+
 
 class RandomBoardTicTacToe:
     def __init__(self, size = (600, 600)):
@@ -23,11 +23,11 @@ class RandomBoardTicTacToe:
         self.CIRCLE_COLOR = (140, 146, 172)
         self.CROSS_COLOR = (140, 146, 172)
 
-        # This sets the WIDTH and HEIGHT of each grid location
+        # sets the WIDTH and HEIGHT of each grid location
         self.WIDTH = self.size[0]/self.GRID_SIZE - self.OFFSET
         self.HEIGHT = self.size[1]/self.GRID_SIZE - self.OFFSET
 
-        # This sets the margin between each cell
+        # margin between each cell
         self.MARGIN = 5
 
         # Initialize pygame
@@ -56,21 +56,11 @@ class RandomBoardTicTacToe:
                 x = column * (self.WIDTH + self.MARGIN) + self.MARGIN
                 y = row * (self.HEIGHT + self.MARGIN) + self.MARGIN + 40
                 if self.game_state.board_state[row, column] == 1:
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                     self.draw_circle(x, y)
                 elif self.game_state.board_state[row, column] == -1:
                     self.draw_cross(x, y)
-=======
-                    self.draw_circle(x, y) #1=O
-                elif self.game_state.board_state[row, column] == -1:
-                    self.draw_cross(x, y) #-1=X
->>>>>>> 8fbe3b7 (finished pretty much)
-=======
-                    self.draw_circle(x, y)
-                elif self.game_state.board_state[row, column] == -1:
-                    self.draw_cross(x, y)
->>>>>>> 8a1f262 (Fixed Menu)
+
         
         pygame.display.update()
 
@@ -179,15 +169,15 @@ class RandomBoardTicTacToe:
                
                
                if event.type == pygame.MOUSEBUTTONUP: # mouse click event
-                   mousex, mousey = event.pos
-                   if mousey < 40:
+                   mouseX, mouseY = event.pos
+                   if mouseY < 40:
                        continue #ignore clicks above grid
                    
                    col_w = self.WIDTH + self.MARGIN
                    col_h = self.HEIGHT + self.MARGIN
 
-                   grid_x = mousex - self.MARGIN
-                   grid_y = mousey - 40 - self.MARGIN
+                   grid_x = mouseX - self.MARGIN
+                   grid_y = mouseY - 40 - self.MARGIN
 
                    col = int(grid_x // col_w)
                    row = int(grid_y // col_h)  # adjust for top margin
@@ -215,7 +205,7 @@ class RandomBoardTicTacToe:
         pygame.quit()
 
 tictactoegame = RandomBoardTicTacToe()
-def menu(game): # simple menu to select options before starting the game
+def menu(game): # menu to select options before starting the game
     pygame.init()
     grid_size = 4
     screen = pygame.display.set_mode((430, 480))
